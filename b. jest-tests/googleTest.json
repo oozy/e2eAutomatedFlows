@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://google.com",
+  "tests":[{
+    "element":"title",
+    "value":"Google"
+  }]
+}

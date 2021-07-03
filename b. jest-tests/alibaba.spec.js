@@ -8,7 +8,10 @@ let browser
 let page
 
 beforeAll(async () => {
-  browser = await puppeteer.launch()
+  browser = await puppeteer.launch({
+    headless: false,
+    slowMo: 2
+  })
   page = await browser.newPage()
 })
 
