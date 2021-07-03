@@ -1,4 +1,3 @@
-
 {
   "ts-node": {
     "transpileOnly": true, // you can specify ts-node options here
