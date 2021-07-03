@@ -304,3 +304,4 @@ Goes to walmart.com and adds a Nintendo game to an empty shopping cart. Validate
 
 
 [b. jest-tests/walmart.spec.js](https://github.com/checkly/puppeteer-examples/blob/master/b.%20jest-tests/walmart.spec.js)
+# e2eAutomatedFlows
