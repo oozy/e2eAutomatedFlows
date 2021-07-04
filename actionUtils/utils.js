@@ -31,18 +31,18 @@ const getElementByDataHook = async (page, dataHook) => {
 export const generateTestAction = async (data) => {
   const { element, action, dataHook, value, page } = data;
   const testAction = element + '_' + action;
-  console.log('\n\n\n\n\n\n');
-  console.log('testAction', testAction);
   switch (testAction.trim()) {
     case 'input_change':
-      return await OnChangeInput(dataHook, value, page);
+      return OnChangeInput(dataHook, value, page);
     case 'svg_click':
     case 'input_click':
-      return await clickOnElement(dataHook, page);
+      return clickOnElement(dataHook, page);
     case 'select_click':
-      return await clickOnElementWithValue(dataHook, page, value);
-    // case 'div_exists':
-    //   return await getElementByDataHook(page, dataHook);
+      return clickOnElementWithValue(dataHook, page, value);
+    case 'select_change':
+      return clickOnElementWithValue(dataHook, page, value);
+    case 'a_click':
+      return clickOnLink(page, element, value);
     default:
       console.log('whattt???!?!?!?!?');
       break;
@@ -87,7 +87,6 @@ export const clickOnElement = async (dataHook, page) => {
   try {
     const element = await getElementByDataHook(page, dataHook);
     if (element) {
-      // await element.click();
       await element.evaluate((e) => e.click());
       return element;
     }
@@ -100,18 +99,29 @@ export const clickOnElement = async (dataHook, page) => {
 export const clickOnElementWithValue = async (dataHook, page, value) => {
   try {
     const element = await clickOnElement(dataHook, page);
-    // const option = await element.$$eval("", node =>
-    // node.value);
+    const selector = `${dataHookBuilder(dataHook)}`;
 
-    console.log('option', element);
-    // const option = await page.$eval(
-    //   '#tst_quantity_dropdown',
-    //   (node) => node.value,
-    // );
+    console.log('selector', selector);
+    const options = await page.$$eval(selector, (options) =>
+      options.map((option) => option.textContent),
+    );
+    console.log('options', options);
+
+    const option = await page.$eval(selector, (node) => {
+      console.log('/*/*/*/*//*123456/*/*/*/*//*', node.value);
+    });
     const newElementVal = await page.evaluate((el) => el.value, element);
     assert.strictEqual(value, newElementVal);
     console.log(`test for deleteInputVal passed `);
   } catch (error) {
     console.log('clickOnElementWithValue', error);
   }
+};
+
+const clickOnLink = async (page, element, text) => {
+  const [button] = await page.$x(`//${element}[contains(text(), "${text}")]`);
+  if (button) {
+    await button.click();
+  }
+  return;
 };

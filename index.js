@@ -11,108 +11,40 @@ const getTestJson = async () => {
   // return data;
   console.log(12313213213213213132132132);
   return {
-    pageUrl: 'http://localhost:3000/search',
+    pageUrl: 'http://localhost:3001/search',
     tests: [
       {
-        element: 'input',
+        element: 'a',
         action: 'click',
-        dataHook: 'search-input',
-        value: '',
-        time: 1625346434955,
+        dataHook: '',
+        value: 'Collections',
+        time: 1625425607196,
+        pageUrl: 'http://localhost:3001/collections',
+      },
+      {
+        element: 'a',
+        action: 'click',
+        dataHook: '',
+        value: 'Search Books',
+        time: 1625425608381,
         pageUrl: 'http://localhost:3001/search',
       },
       {
-        element: 'input',
+        element: 'a',
         action: 'click',
-        dataHook: 'search-input',
-        value: '',
-        time: 1625346434955,
-        pageUrl: 'http://localhost:3001/search',
+        dataHook: '',
+        value: 'Collections',
+        time: 1625425609490,
+        pageUrl: 'http://localhost:3001/collections',
       },
       {
-        element: 'input',
-        action: 'change',
-        dataHook: 'search-input',
-        value: 'gogo',
-        time: 1625346437159,
-        pageUrl: 'http://localhost:3001/search',
-      },
-      {
-        element: 'svg',
+        element: 'a',
         action: 'click',
-        dataHook: 'imageIcon-book-0',
-        time: 1625346443191,
+        dataHook: '',
+        value: 'Search Books',
+        time: 1625425610339,
         pageUrl: 'http://localhost:3001/search',
       },
-      {
-        element: 'svg',
-        action: 'click',
-        dataHook: 'imageIcon-book-0',
-        time: 1625346443191,
-        pageUrl: 'http://localhost:3001/search',
-      },
-      {
-        element: 'select',
-        action: 'click',
-        dataHook: 'select-book-0',
-        value: '123',
-        time: 1625346443859,
-        pageUrl: 'http://localhost:3001/search',
-      },
-      // {
-      //   element: 'select',
-      //   action: 'click',
-      //   dataHook: 'select-book-0',
-      //   value: '123',
-      //   time: 1625346443859,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'select',
-      //   action: 'change',
-      //   dataHook: 'select-book-0',
-      //   value: '321',
-      //   time: 1625346445093,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'svg',
-      //   action: 'click',
-      //   dataHook: 'imageIcon-book-1',
-      //   time: 1625346446018,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'svg',
-      //   action: 'click',
-      //   dataHook: 'imageIcon-book-1',
-      //   time: 1625346446018,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'select',
-      //   action: 'click',
-      //   dataHook: 'select-book-1',
-      //   value: '123',
-      //   time: 1625346446549,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'select',
-      //   action: 'click',
-      //   dataHook: 'select-book-1',
-      //   value: '123',
-      //   time: 1625346446549,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
-      // {
-      //   element: 'select',
-      //   action: 'change',
-      //   dataHook: 'select-book-1',
-      //   value: '321',
-      //   time: 1625346447769,
-      //   pageUrl: 'http://localhost:3001/search',
-      // },
     ],
   };
 };
@@ -121,28 +53,46 @@ const getTestJson = async () => {
   const { pageUrl = '', tests = [] } = await getTestJson();
   const browser = await puppeteer.launch({
     headless: false,
-    slowMo: 200,
+    slowMo: 250,
     args: [
       '--no-sandbox', // I needed these args for it to run on my machine, you probably don't need them.
       '--disable-setuid-sandbox',
     ],
   });
   try {
-    console.log('Start');
+    console.log('Start', new Date());
     const page = await browser.newPage();
     await forLoop(tests, page, pageUrl);
     await browser.close();
-    console.log('End');
+    console.log('End', new Date());
   } catch (err) {
     console.log(err);
   }
 })();
 
-const forLoop = async (tests, page, pageUrl) => {
-  await page.goto(pageUrl, { waitUntil: 'networkidle0' });
+const forLoop = async (tests, page) => {
   for (let index = 0; index < tests.length; index++) {
     const test = tests[index];
+    const nextTest = tests[index] || null;
+
+    if (nextTest) {
+      console.time('start waiting ...');
+      const timeToWait =
+        new Date(nextTest.time - test.time).getSeconds() * 1000;
+      await delay(timeToWait);
+      console.timeEnd('start waiting ...');
+    }
+    // if (page.url() !== test.pageUrl)
+    //   await page.goto(test.pageUrl, { waitUntil: 'networkidle0' });
+    if (index === 0)
+      await page.goto(test.pageUrl, { waitUntil: 'networkidle0' });
     const data = { page, ...test };
     await generateTestAction({ ...data });
   }
+};
+
+export const delay = (ms) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
 };
