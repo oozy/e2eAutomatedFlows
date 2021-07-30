@@ -21,7 +21,8 @@
     "lodash": "^4.17.19"
   },
   "scripts": {
-    "start": "node --experimental-modules --es-module-specifier-resolution=node index.js",
+    "start:dev": "node --experimental-modules --es-module-specifier-resolution=node index.js",
+    "start": "node index.js",
     "lint": "eslint . --fix"
   },
   "eslintConfig": {
