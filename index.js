@@ -1,6 +1,6 @@
 import express from 'express';
 import { runTest } from './testRuner';
-var timeout = require('connect-timeout');
+import timeout from 'connect-timeout';
 
 // import bodyParser from 'body-parser';
 const app = express();
