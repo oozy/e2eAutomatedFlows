@@ -28,7 +28,6 @@ export const runTest = async (taskId, pageUrl) => {
 		args: [
 			'--no-sandbox', // I needed these args for it to run on my machine, you probably don't need them.
 			'--disable-setuid-sandbox',
-			'--window-size=1000,900',
 		],
 	});
 	try {
