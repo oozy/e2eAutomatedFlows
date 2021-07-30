@@ -22,13 +22,15 @@ export const runTest = async (taskId, pageUrl) => {
 		width,
 		headlessBrowser = true,
 	} = await getTestJson(taskId);
+	// const browser = await puppeteer.launch({
+	// 	args: [
+	// 		'--no-sandbox', // I needed these args for it to run on my machine, you probably don't need them.
+	// 		'--disable-setuid-sandbox',
+	// 	],
+	// });
+
 	const browser = await puppeteer.launch({
-		headless: headlessBrowser,
-		slowMo: headlessBrowser ? 0 : 70,
-		args: [
-			'--no-sandbox', // I needed these args for it to run on my machine, you probably don't need them.
-			'--disable-setuid-sandbox',
-		],
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 	});
 	try {
 		console.log('Start', new Date());
