@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/task', async (req, res) => {
+  req.setTimeout(500000);
 	global.globalString = 100;
 	const { taskId, pageUrl } = req.body;
 	await runTest(taskId, pageUrl);
