@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 function haltOnTimedout(req, res, next) {
 	if (!req.timedout) next();
 }
-app.post('/task', timeout(500000), async (req, res) => {
+app.post('/task', timeout('60s'), async (req, res) => {
 	req.setTimeout(500000);
 	global.globalString = 100;
 	const { taskId, pageUrl } = req.body;
