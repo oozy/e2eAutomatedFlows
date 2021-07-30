@@ -17,6 +17,6 @@ app.post('/task', async (req, res) => {
 	res.send(` globalString :  ${globalString}`);
 });
 
-app.listen(port, () => {
-	console.log(`app listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+// 	console.log(`app listening at http://localhost:${port}`);
+// });
