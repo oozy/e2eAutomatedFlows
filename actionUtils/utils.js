@@ -194,15 +194,15 @@ const promiseWrapper = async (fn, page, dataHook) => {
 	try {
 		return await fn();
 	} catch (ex) {
-		await page.screenshot({
-			path: `dataHook-${dataHook.value ||
-				''}-failedTestsNum-${failedTests}.png`,
-			fullPage: true,
-		});
-		globalString = globalString - 2;
-		console.log(`will not execute dataHook: ${dataHook?.value}`);
-		return notFoundElemantScore;
-	}
+									// await page.screenshot({
+									// 	path: `dataHook-${dataHook.value ||
+									// 		''}-failedTestsNum-${failedTests}.png`,
+									// 	fullPage: true,
+									// });
+									globalString = globalString - 2;
+									console.log(`will not execute dataHook: ${dataHook?.value}`);
+									return notFoundElemantScore;
+								}
 };
 
 const mouseUpElem = async (dataHook, page, x, y) => {
