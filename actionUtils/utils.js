@@ -105,12 +105,13 @@ export const OnChangeInput = async (dataHook, value, page) => {
 };
 
 const assertNewVal = async (value, newValue, page, dataHook) => {
+	totalTests++;
 	try {
-		assert.strictEqual(value, newValue + '1');
+		assert.strictEqual(value, newValue);
+		succededTests++
 	} catch (error) {
 		console.log('assertNewVal==========>', error);
-		testResult.score = testResult.score - 5;
-		testResult.errors = [...testResult.errors, errorsFormat(dataHook, error)];
+		testErrors = [...testErrors, errorsFormat(dataHook, error)];
 		// await page.screenshot({
 		// 	path: `assertNewVal-${'assertNewVal' + value}.png`,
 		// 	fullPage: true,

@@ -16,9 +16,18 @@ app.get('/', (req, res) => {
 
 app.post('/task', async (req, res) => {
   req.setTimeout(500000)
-  global.testResult = { score: 100, errors: [] }
+  global.testErrors = []
+  global.totalTests = 0
+  global.succededTests = 0
+
   const { taskId, pageUrl } = req.body
   await runTest(taskId, pageUrl)
+
+  const testResult = {
+    errors: testErrors,
+    score: (succededTests / totalTests) * 100
+  }
+
   res.json(testResult)
 })
 
