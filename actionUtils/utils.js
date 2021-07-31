@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { errorsFormat } from './errorConfig';
 let failedTests = 0;
 const assertFaildScore = 5;
 const notFoundElemantScore = 2;
@@ -41,7 +42,6 @@ export const generateTestAction = async (data) => {
 	console.log('dataHook', dataHook);
 	console.log('testAction', testAction);
 
-	// if (!dataHook) return;
 	switch (testAction.trim()) {
 		case 'input_change':
 			return OnChangeInput(attribute, value, page);
@@ -91,24 +91,30 @@ export const OnChangeInput = async (dataHook, value, page) => {
 			await input.type(String.fromCharCode(13), { delay: 1000 });
 		}
 
-		await promiseWrapper(
+		const newValue = await promiseWrapper(
 			async () => page.evaluate((el) => el.value, input),
 			page,
 			dataHook
 		);
-		console.log('test for typeOnInput passed ');
+		assertNewVal(value, newValue, page, dataHook?.value || '');
+		console.log('test for typeOnInput passed');
 		return;
 	} catch (error) {
 		console.log('typeOnInputError', error);
 	}
 };
 
-const assertNewVal = (value, newValue) => {
+const assertNewVal = async (value, newValue, page, dataHook) => {
 	try {
-		assert.strictEqual(value, newValue);
+		assert.strictEqual(value, newValue + '1');
 	} catch (error) {
 		console.log('assertNewVal==========>', error);
-		testScore = testScore - 5;
+		testResult.score = testResult.score - 5;
+		testResult.errors = [...testResult.errors, errorsFormat(dataHook, error)];
+		// await page.screenshot({
+		// 	path: `assertNewVal-${'assertNewVal' + value}.png`,
+		// 	fullPage: true,
+		// });
 	}
 };
 
@@ -153,8 +159,11 @@ export const clickOnElementWithValue = async (dataHook, page, value) => {
 			dataHook
 		);
 
-		const option = await page.$eval(`select${selector}`, (node) => node.value);
-		assertNewVal(value, option);
+		const newOption = await page.$eval(
+			`select${selector}`,
+			(node) => node.value
+		);
+		assertNewVal(value, newOption, page, dataHook?.value || '');
 	} catch (error) {
 		console.log('clickOnElementWithValue', error);
 	}
@@ -194,12 +203,6 @@ const promiseWrapper = async (fn, page, dataHook) => {
 	try {
 		return await fn();
 	} catch (ex) {
-		// await page.screenshot({
-		// 	path: `dataHook-${dataHook.value ||
-		// 		''}-failedTestsNum-${failedTests}.png`,
-		// 	fullPage: true,
-		// });
-		testScore = testScore - 2;
 		console.log(`will not execute dataHook: ${dataHook?.value}`);
 		return notFoundElemantScore;
 	}

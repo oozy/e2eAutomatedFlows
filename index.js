@@ -1,6 +1,7 @@
 import express from 'express';
 import { runTest } from './testRuner';
 import bodyParser from 'body-parser';
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -12,10 +13,10 @@ app.get('/', (req, res) => {
 
 app.post('/task', async (req, res) => {
 	req.setTimeout(500000);
-	global.testScore = 100;
+	global.testResult = { score: 100, errors: [] };
 	const { taskId, pageUrl } = req.body;
 	await runTest(taskId, pageUrl);
-	res.send(` testScore :  ${testScore}`);
+	res.json(testResult);
 });
 
 app.listen(port, () => {
