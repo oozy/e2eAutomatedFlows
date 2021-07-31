@@ -1,8 +1,5 @@
 import assert from 'assert';
 import { errorsFormat } from './errorConfig';
-let failedTests = 0;
-const assertFaildScore = 5;
-const notFoundElemantScore = 2;
 
 const dataHookBuilder = (dataHook) => {
 	if (dataHook?.value != '')
@@ -200,12 +197,10 @@ const hoverOnElement = async (dataHook, page) => {
 };
 
 const promiseWrapper = async (fn, page, dataHook) => {
-	failedTests++;
 	try {
 		return await fn();
 	} catch (ex) {
 		console.log(`will not execute dataHook: ${dataHook?.value}`);
-		return notFoundElemantScore;
 	}
 };
 
