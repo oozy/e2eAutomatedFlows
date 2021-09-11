@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import axios from 'axios';
 import { generateTestAction } from './actionUtils/utils.js';
+import { testObject } from './mockTest';
 
 const getTestJson = async (taskId) => {
 	const result = await axios.get(
@@ -13,12 +14,14 @@ const getTestJson = async (taskId) => {
 		}
 	);
 	return result.data.testObject;
+	// return testObject;
 };
 
 export const runTest = async (taskId, pageUrl) => {
 	const { tests = [], height, width } = await getTestJson(taskId);
 
 	const browser = await puppeteer.launch({
+		headless: true,
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 	});
 	try {
@@ -29,6 +32,7 @@ export const runTest = async (taskId, pageUrl) => {
 			height,
 		});
 		await forLoop(tests, page, pageUrl);
+		await page.close();
 		await browser.close();
 		console.log('End', new Date());
 	} catch (err) {
