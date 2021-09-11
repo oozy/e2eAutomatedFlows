@@ -82,7 +82,8 @@ export const OnChangeInput = async (dataHook, value, page) => {
 			await input.press('Backspace');
 			await input.type(`${value}`);
 			newValue = await page.evaluate((el) => el.value, input);
-			await input.type(String.fromCharCode(13), { delay: 1000 });
+			// need to add it it to the chrom exstantion.
+			// await input.type(String.fromCharCode(13), { delay: 1000 });
 		}
 		if (newValue === '') {
 			newValue = await page.evaluate((el) => el.value, input);
