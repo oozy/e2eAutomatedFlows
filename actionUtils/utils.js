@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
 import assert from 'assert';
 import { errorsFormat } from './errorConfig';
-
 const dataHookBuilder = (dataHook) => {
 	if (dataHook?.value != '')
 		return dataHook.type === 'id'
@@ -25,8 +25,8 @@ const getElementByDataHook = async (page, dataHook) => {
 const getAttribute = (data) => {
 	const { dataHook = '', id = '' } = data;
 	return {
-		type: Boolean(id) ? 'id' : 'data-hook',
-		value: Boolean(id) ? id : dataHook,
+		type: id ? 'id' : 'data-hook',
+		value: id ? id : dataHook,
 	};
 };
 
@@ -46,7 +46,7 @@ export const generateTestAction = async (data) => {
 		case 'button_click':
 			return clickOnElement(attribute, page);
 		case 'select_click':
-			return clickOnElementWithValue(attribute, page, value);
+			return clickOnSelectElement(attribute, page);
 		case 'select_change':
 			return clickOnElementWithValue(attribute, page, value);
 		case 'a_click':
@@ -83,7 +83,7 @@ export const OnChangeInput = async (dataHook, value, page) => {
 			await input.type(`${value}`);
 			newValue = await page.evaluate((el) => el.value, input);
 			// need to add it it to the chrom exstantion.
-			// await input.type(String.fromCharCode(13), { delay: 1000 });
+			await input.type(String.fromCharCode(13), { delay: 1000 });
 		}
 		if (newValue === '') {
 			newValue = await page.evaluate((el) => el.value, input);
@@ -128,27 +128,31 @@ export const clickOnElement = async (dataHook, page) => {
 	}
 };
 
-export const clickOnElementWithValue = async (dataHook, page, value) => {
+export const clickOnSelectElement = async (dataHook, page) => {
 	try {
+		await hoverOnElement(dataHook, page);
 		await clickOnElement(dataHook, page);
+	} catch (error) {
+		testErrors = [
+			...testErrors,
+			`click On Select Element Value datahook: ${dataHook.value}`,
+		];
+
+		console.log('clickOnSelectElement', error);
+	}
+};
+export const clickOnElementWithValue = async (dataHook, page, newValue) => {
+	try {
 		const selector = `${dataHookBuilder(dataHook)}`;
 		await page.waitForSelector(selector, {
 			timeout: 1000,
 		});
-
-		// await page.$x(`//${element}[contains(text(), "${text}")]`);
-		const option = (
-			await page.$x(`//select${selector}/option[text() = ${value}]`)
-		)[0];
-		const value = await (await option.getProperty('value')).jsonValue();
-		// await page.select('#selectId', value);
-		await page.select(`select${selector}`, value);
-
+		await page.select(`select${selector}`, `${newValue}`);
 		const newOption = await page.$eval(
 			`select${selector}`,
 			(node) => node.value
 		);
-		assertNewVal(value, newOption, page, dataHook?.value || '');
+		assertNewVal(newValue, newOption, page, dataHook?.value || '');
 	} catch (error) {
 		testErrors = [
 			...testErrors,
@@ -191,19 +195,6 @@ const hoverOnElement = async (dataHook, page) => {
 	}
 };
 
-const promiseWrapper = async (fn, page, dataHook) => {
-	try {
-		return await fn();
-	} catch (ex) {
-		testErrors = [
-			...testErrors,
-			`will not execute dataHook: ${dataHook.value}`,
-		];
-
-		console.log(`will not execute dataHook: ${dataHook?.value}`);
-	}
-};
-
 const mouseUpElem = async (dataHook, page, x, y) => {
 	totalTests++;
 	try {
@@ -220,7 +211,7 @@ const mouseUpElem = async (dataHook, page, x, y) => {
 	} catch (e) {
 		testErrors = [...testErrors, `mouseUp hover On Element: ${dataHook.value}`];
 
-		console.error(`hoverOnElement datahook:${dataHook.value}`, e);
+		console.error(`mouseUpElem datahook:${dataHook.value}`, e);
 	}
 };
 
@@ -241,6 +232,6 @@ const mouseDownElem = async (dataHook, page, x, y) => {
 			...testErrors,
 			`mouse Down hover On Element: ${dataHook.value}`,
 		];
-		console.error(`hoverOnElement datahook:${dataHook.value}`, e);
+		console.error(`mouseDownElem datahook:${dataHook.value}`, e);
 	}
 };

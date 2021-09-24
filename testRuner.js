@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import axios from 'axios';
 import { generateTestAction } from './actionUtils/utils.js';
-import { testObject } from './mockTest';
+// import { testObject } from './mockTest';
 
 const getTestJson = async (taskId) => {
 	const result = await axios.get(
@@ -14,15 +14,15 @@ const getTestJson = async (taskId) => {
 		}
 	);
 	return result.data.testObject;
-	// return testObject;
 };
 
 export const runTest = async (taskId, pageUrl) => {
 	const { tests = [], height, width } = await getTestJson(taskId);
 
 	const browser = await puppeteer.launch({
-		headless: true,
-		args: ['--no-sandbox', '--disable-setuid-sandbox'],
+		headless: false,
+		devtools: true,
+		args: ['--no-sandbox', '--allow-sandbox-debugging'],
 	});
 	try {
 		console.log('Start', new Date());
@@ -66,7 +66,7 @@ const forLoop = async (tests, page, pageUrl) => {
 };
 
 export const delay = (ms) => {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		setTimeout(resolve, ms);
 	});
 };

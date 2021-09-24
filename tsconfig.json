@@ -1,12 +1,32 @@
+// {
+// 	"ts-node": {
+// 		"transpileOnly": true, // you can specify ts-node options here
+// 		"compilerOptions": {
+// 			"moduleResolution": "node",
+// 			"target": "es2016",
+// 			"module": "commonjs" // you can also override compilerOptions.  Only ts-node will use these overrides
+// 		},
+// 		"rules": {
+// 			"indent": "off"
+// 		}
+// 	},
+// 	"compilerOptions": {
+// 		"module": "esnext" // tsc will continue to use these options
+// 	}
+// }
+
 {
-  "ts-node": {
-    "transpileOnly": true, // you can specify ts-node options here
-    "compilerOptions": {
-      "target": "es5",  
-      "module": "commonjs" // you can also override compilerOptions.  Only ts-node will use these overrides
-    }
-  },
-  "compilerOptions": {
-    "module": "esnext" // tsc will continue to use these options
-  }
+	"compilerOptions": {
+		"target": "es2017",
+		"module": "commonjs",
+		"declaration": true,
+		"sourceMap": true,
+		"outDir": "lib",
+		"lib": ["dom", "es2017"],
+		"suppressImplicitAnyIndexErrors": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"compileOnSave": true,
+	"exclude": ["node_modules"],
+	"include": ["src"]
 }

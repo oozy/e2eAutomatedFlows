@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import express from 'express';
 import { runTest } from './testRuner';
 import bodyParser from 'body-parser';
