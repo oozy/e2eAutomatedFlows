@@ -20,9 +20,9 @@ export const runTest = async (taskId, pageUrl) => {
 	const { tests = [], height, width } = await getTestJson(taskId);
 
 	const browser = await puppeteer.launch({
-		headless: false,
-		devtools: true,
-		args: ['--no-sandbox', '--allow-sandbox-debugging'],
+		headless: true,
+		// devtools: true,
+		// args: ['--no-sandbox', '--allow-sandbox-debugging'],
 	});
 	try {
 		console.log('Start', new Date());
