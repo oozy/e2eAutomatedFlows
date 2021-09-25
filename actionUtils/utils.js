@@ -13,7 +13,9 @@ const getElementByDataHook = async (page, dataHook) => {
 	totalTests++;
 	try {
 		const selector = `${dataHookBuilder(dataHook)}`;
-		const elementPromise = await page.$(selector);
+		const elementPromise = await page.$(selector, {
+			timeout: 1000,
+		});
 		succededTests++;
 		return elementPromise;
 	} catch (error) {
@@ -182,7 +184,7 @@ const hoverOnElement = async (dataHook, page) => {
 	try {
 		const selector = dataHookBuilder(dataHook);
 		await page.waitForSelector(selector, {
-			timeout: 3000,
+			timeout: 2000,
 		});
 		await page.hover(selector);
 		succededTests++;

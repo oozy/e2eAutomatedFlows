@@ -21,7 +21,7 @@ export const runTest = async (taskId, pageUrl) => {
 
 	const browser = await puppeteer.launch({
 		headless: true,
-		args: ['--no-sandbox'],
+		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 	});
 	try {
 		console.log('Start', new Date());
